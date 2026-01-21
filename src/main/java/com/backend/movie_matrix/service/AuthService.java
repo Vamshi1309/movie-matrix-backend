@@ -1,0 +1,59 @@
+package com.backend.movie_matrix.service;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Service;
+
+import com.backend.movie_matrix.dto.LoginRequest;
+import com.backend.movie_matrix.dto.RegisterRequest;
+import com.backend.movie_matrix.entity.User;
+import com.backend.movie_matrix.repository.UserRepo;
+import com.backend.movie_matrix.util.JwtUtil;
+
+import lombok.RequiredArgsConstructor;
+
+@Service
+@RequiredArgsConstructor
+public class AuthService {
+
+    @Autowired
+    private final UserRepo repo;
+
+    @Autowired
+    private final PasswordEncoder passwordEncoder;
+
+    @Autowired
+    private final JwtUtil JwtUtil;
+
+    public String register(RegisterRequest request) {
+
+        if (repo.existsByEmail(request.getEmail())) {
+            throw new RuntimeException("Email Already Exists");
+        }
+
+        User user = User
+                .builder()
+                .email(request.getEmail())
+                .password(passwordEncoder.encode(request.getPassword()))
+                .build();
+
+        repo.save(user);
+
+        return login(new LoginRequest(
+                request.getEmail(),
+                request.getPassword()));
+
+    }
+
+    public String login(LoginRequest request) {
+        User user = repo.findByEmail(request.getEmail())
+                .orElseThrow(() -> new RuntimeException("Invalid Credentails"));
+
+        if (!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
+            throw new RuntimeException("Invalid Credentails");
+        }
+
+        return JwtUtil.generateToken(user.getEmail());
+    }
+
+}
