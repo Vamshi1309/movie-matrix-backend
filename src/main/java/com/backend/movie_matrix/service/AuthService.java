@@ -1,12 +1,15 @@
 package com.backend.movie_matrix.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.backend.movie_matrix.dto.LoginRequest;
 import com.backend.movie_matrix.dto.RegisterRequest;
 import com.backend.movie_matrix.entity.User;
+import com.backend.movie_matrix.exception.UserAlreadyExistsException;
+import com.backend.movie_matrix.exception.UserNotFoundException;
 import com.backend.movie_matrix.repository.UserRepo;
 import com.backend.movie_matrix.util.JwtUtil;
 
@@ -28,7 +31,7 @@ public class AuthService {
     public String register(RegisterRequest request) {
 
         if (repo.existsByEmail(request.getEmail())) {
-            throw new RuntimeException("Email Already Exists");
+            throw new UserAlreadyExistsException("Email Already Exists");
         }
 
         User user = User
@@ -47,10 +50,10 @@ public class AuthService {
 
     public String login(LoginRequest request) {
         User user = repo.findByEmail(request.getEmail())
-                .orElseThrow(() -> new RuntimeException("Invalid Credentails"));
+                .orElseThrow(() -> new UserNotFoundException("Please Register First"));
 
         if (!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
-            throw new RuntimeException("Invalid Credentails");
+            throw new BadCredentialsException(null);
         }
 
         return JwtUtil.generateToken(user.getEmail());

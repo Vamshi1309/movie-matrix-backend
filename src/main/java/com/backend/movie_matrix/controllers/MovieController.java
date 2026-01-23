@@ -9,7 +9,9 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.backend.movie_matrix.dto.ApiResponse;
 import com.backend.movie_matrix.entity.Movie;
+import com.backend.movie_matrix.exception.MoviesNotFoundException;
 import com.backend.movie_matrix.service.MovieService;
 
 @RestController
@@ -21,22 +23,67 @@ public class MovieController {
     private MovieService movieService;
 
     @GetMapping("/all")
-    public ResponseEntity<List<Movie>> getAllMovies() {
-        return ResponseEntity.ok(movieService.getAllMovies());
+    public ResponseEntity<ApiResponse<List<Movie>>> getAllMovies() {
+
+        List<Movie> movies = movieService.getAllMovies();
+
+        if (movies.isEmpty()) {
+            throw new MoviesNotFoundException("No Movies Found");
+        }
+
+        ApiResponse<List<Movie>> response = new ApiResponse<List<Movie>>(
+                true,
+                "All Movies Fetched Successfully",
+                movies);
+
+        return ResponseEntity.ok(response);
     }
 
     @GetMapping("/trending")
-    public ResponseEntity<List<Movie>> getTrendingMovies() {
-        return ResponseEntity.ok(movieService.getTrendingMovies());
+    public ResponseEntity<ApiResponse<List<Movie>>> getTrendingMovies() {
+
+        List<Movie> movies = movieService.getTrendingMovies();
+
+        if (movies.isEmpty()) {
+            throw new MoviesNotFoundException("No Trending Movies Found");
+        }
+
+        ApiResponse<List<Movie>> response = new ApiResponse<List<Movie>>(
+                true,
+                "Trending Movies Fetched Successfully",
+                movies);
+
+        return ResponseEntity.ok(response);
     }
 
     @GetMapping("/top-rated")
-    public ResponseEntity<List<Movie>> getTopRatedMovies() {
-        return ResponseEntity.ok(movieService.getTopRatedMovies());
+    public ResponseEntity<ApiResponse<List<Movie>>> getTopRatedMovies() {
+
+        List<Movie> movies = movieService.getTopRatedMovies();
+
+        if (movies.isEmpty()) {
+            throw new MoviesNotFoundException("No Top Rated Movies Found");
+        }
+
+        ApiResponse<List<Movie>> response = new ApiResponse<List<Movie>>(
+                true,
+                "Top Rated Movies Fetched Successfully",
+                movies);
+
+        return ResponseEntity.ok(response);
     }
 
     @GetMapping("/for-you")
-    public ResponseEntity<List<Movie>> getForYouMovies() {
-        return ResponseEntity.ok(movieService.getForYouMovies());
+    public ResponseEntity<ApiResponse<List<Movie>>> getForYouMovies() {
+
+        List<Movie> movies = movieService.getForYouMovies();
+        if (movies.isEmpty()) {
+            throw new MoviesNotFoundException("No Movies Found for You");
+        }
+        ApiResponse<List<Movie>> response = new ApiResponse<List<Movie>>(
+                true,
+                "Movies For You Fetched Successfully",
+                movies);
+        return ResponseEntity.ok(response);
     }
 }
