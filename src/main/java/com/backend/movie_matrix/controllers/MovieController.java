@@ -86,4 +86,36 @@ public class MovieController {
                 movies);
         return ResponseEntity.ok(response);
     }
+
+    @GetMapping("/popular")
+    public ResponseEntity<ApiResponse<List<Movie>>> getPopularMovies() {
+        List<Movie> movies = movieService.getPopularMovies();
+
+        if (movies.isEmpty()) {
+            throw new MoviesNotFoundException("No Popular Movies Found");
+        }
+
+        ApiResponse<List<Movie>> response = new ApiResponse<List<Movie>>(
+                true,
+                "popular Movies Fetched Successfully",
+                movies);
+
+        return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/now-playing")
+    public ResponseEntity<ApiResponse<List<Movie>>> getNowPlayingMovies() {
+        List<Movie> movies = movieService.getNowPlayingMovies();
+
+        if (movies.isEmpty()) {
+            throw new MoviesNotFoundException("No Movies are Now Playing");
+        }
+
+        ApiResponse<List<Movie>> response = new ApiResponse<List<Movie>>(
+                true,
+                "Now Playing Movies Fetched Successfully",
+                movies);
+
+        return ResponseEntity.ok(response);
+    }
 }

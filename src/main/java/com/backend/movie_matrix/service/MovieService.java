@@ -33,4 +33,12 @@ public class MovieService {
     public List<Movie> getForYouMovies() {
         return movieRepo.findMoviesByCategory("FOR_YOU");
     }
+
+    public List<Movie> getPopularMovies() {
+        return movieRepo.findMoviesByCategory("popular");
+    }
+
+    public List<Movie> getNowPlayingMovies() {
+        return movieRepo.findMoviesByCategory("now_playing");
+    }
 }
