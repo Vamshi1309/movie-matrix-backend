@@ -1,6 +1,7 @@
 package com.backend.movie_matrix.repository;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -17,4 +18,10 @@ public interface MovieRepo extends JpaRepository<Movie, Long> {
             "WHERE c.name = :categoryName " +
             "ORDER BY mc.displayOrder")
     List<Movie> findMoviesByCategory(@Param("categoryName") String categoryName);
+
+    List<Movie> findTop10ByOrderByRatingDesc();
+
+    List<Movie> findByTitleContainingIgnoreCase(String title);
+
+    Optional<Movie> findByTitleIgnoreCase(String title);
 }
