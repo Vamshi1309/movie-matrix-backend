@@ -5,9 +5,11 @@ import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import com.backend.movie_matrix.dto.AuthResponse;
 import com.backend.movie_matrix.dto.LoginRequest;
 import com.backend.movie_matrix.dto.RegisterRequest;
 import com.backend.movie_matrix.entity.User;
+import com.backend.movie_matrix.exception.MobileNumberAlreadyExistsException;
 import com.backend.movie_matrix.exception.UserAlreadyExistsException;
 import com.backend.movie_matrix.exception.UserNotFoundException;
 import com.backend.movie_matrix.repository.UserRepo;
@@ -34,10 +36,16 @@ public class AuthService {
             throw new UserAlreadyExistsException("Email Already Exists");
         }
 
+        if (repo.findByMobileNumber(request.getMobileNumber()).isPresent()) {
+            throw new MobileNumberAlreadyExistsException("Mobile number already registered");
+        }
+
         User user = User
                 .builder()
                 .email(request.getEmail())
                 .password(passwordEncoder.encode(request.getPassword()))
+                .name(request.getName())
+                .mobileNumber(request.getMobileNumber())
                 .build();
 
         repo.save(user);
@@ -57,6 +65,15 @@ public class AuthService {
         }
 
         return JwtUtil.generateToken(user.getEmail());
+    }
+
+    public String getEmailFromToken(String token) {
+        return JwtUtil.extractEmail(token); 
+    }
+
+    public User getUserByEmail(String email) {
+        return repo.findByEmail(email)
+                .orElseThrow(() -> new UserNotFoundException("User not found"));
     }
 
 }

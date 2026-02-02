@@ -23,15 +23,15 @@ public class MovieService {
     }
 
     public List<Movie> getTrendingMovies() {
-        return movieRepo.findMoviesByCategory("TRENDING");
+        return movieRepo.findMoviesByCategory("trending");
     }
     
     public List<Movie> getTopRatedMovies() {
-        return movieRepo.findMoviesByCategory("TOP_RATED");
+        return movieRepo.findMoviesByCategory("top_rated");
     }
     
     public List<Movie> getForYouMovies() {
-        return movieRepo.findMoviesByCategory("FOR_YOU");
+        return movieRepo.findMoviesByCategory("for_you");
     }
 
     public List<Movie> getPopularMovies() {

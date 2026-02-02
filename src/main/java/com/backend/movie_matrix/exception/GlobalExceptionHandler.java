@@ -34,12 +34,17 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(UserNotFoundException.class)
     public ResponseEntity<ApiResponse<Object>> handleUserNotFound(UserNotFoundException ex) {
-         return buildResponseEntity(ex.getMessage(), HttpStatus.NOT_FOUND);
+        return buildResponseEntity(ex.getMessage(), HttpStatus.UNAUTHORIZED);
     }
 
     @ExceptionHandler(MoviesNotFoundException.class)
     public ResponseEntity<ApiResponse<Object>> handleMoviesNotFoun(MoviesNotFoundException ex) {
-         return buildResponseEntity(ex.getMessage(), HttpStatus.NOT_FOUND);
+        return buildResponseEntity(ex.getMessage(), HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(MobileNumberAlreadyExistsException.class)
+    public ResponseEntity<ApiResponse<Object>> handleMobileNumberAlreadyExists(MobileNumberAlreadyExistsException ex) {
+        return buildResponseEntity(ex.getMessage(), HttpStatus.CONFLICT);
     }
 
     // Catch all other exceptions

@@ -29,7 +29,7 @@ public class SecurityBeansConfig {
                 .csrf(csrf -> csrf.disable())
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/api/auth/**","/posters/**")
+                        .requestMatchers("/api/auth/login", "/api/auth/register","/posters/**")
                         .permitAll()
                         .anyRequest()
                         .authenticated())
