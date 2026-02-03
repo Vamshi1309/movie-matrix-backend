@@ -28,7 +28,7 @@ public class UserController {
     public ResponseEntity<?> getUserProfile() {
         UserProfileResponseDto user = userService.getUserProfile();
 
-        ApiResponse<UserProfileResponseDto> response = new ApiResponse<>(false, "Profile fetched successfully", user);
+        ApiResponse<UserProfileResponseDto> response = new ApiResponse<>(true, "Profile fetched successfully", user);
 
         return ResponseEntity.ok(response);
     }

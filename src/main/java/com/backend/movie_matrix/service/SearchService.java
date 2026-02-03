@@ -86,7 +86,10 @@ public class SearchService {
                 movie.getRating() == null
                         ? null
                         : movie.getRating().doubleValue(),
-                movie.getDescription());
+                movie.getDescription(),
+                movie.getGenre(),
+                movie.getReleaseYear() == null ? null : movie.getReleaseYear().intValue(),
+                movie.getDuration() == null ? null : movie.getDuration().intValue());
     }
 
 }

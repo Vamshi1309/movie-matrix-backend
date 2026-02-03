@@ -6,21 +6,52 @@ public class MovieDto {
     private String posterUrl;
     private Double rating;
     private String description;
+    private String genre;
+    private Integer duration;
+    private Integer releaseYear;
 
     public MovieDto() {
     }
 
-    public MovieDto(Long id,String title, String posterUrl, Double rating, String description) {
+    public Integer getReleaseYear() {
+        return releaseYear;
+    }
+
+    public MovieDto(Long id, String title, String posterUrl, Double rating, String description, String genre,
+            int releaseYear, int duration) {
         this.id = id;
         this.title = title;
         this.posterUrl = posterUrl;
         this.rating = rating;
         this.description = description;
+        this.genre = genre;
+        this.releaseYear = releaseYear;
+        this.duration = duration;
+    }
+
+    public String getGenre() {
+        return genre;
+    }
+
+    public Integer getDuration() {
+        return duration;
+    }
+
+    public void setDuration(Integer duration) {
+        this.duration = duration;
+    }
+
+    public void setReleaseYear(Integer releaseYear) {
+        this.releaseYear = releaseYear;
+    }
+
+    public void setGenre(String genre) {
+        this.genre = genre;
     }
 
     public Long getId() {
         return id;
-    }   
+    }
 
     public void setId(Long id) {
         this.id = id;
