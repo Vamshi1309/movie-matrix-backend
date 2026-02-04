@@ -3,6 +3,8 @@ package com.backend.movie_matrix.repository;
 import java.util.List;
 import java.util.Optional;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -17,7 +19,7 @@ public interface MovieRepo extends JpaRepository<Movie, Long> {
             "JOIN Category c ON mc.categoryId = c.id " +
             "WHERE c.name = :categoryName " +
             "ORDER BY mc.displayOrder")
-    List<Movie> findMoviesByCategory(@Param("categoryName") String categoryName);
+    Page<Movie> findMoviesByCategory(@Param("categoryName") String categoryName, Pageable pageable);
 
     List<Movie> findTop10ByOrderByRatingDesc();
 
