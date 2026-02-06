@@ -43,6 +43,8 @@ public class PasswordResetService {
 
         String otp = String.format("%06d", new Random().nextInt(1000000));
 
+        log.info("🔢 Generated OTP: {} for email: {}", otp, email); // ← Add this for testing
+
         PasswordResetOtp otpEntity = new PasswordResetOtp();
         otpEntity.setEmail(email);
         otpEntity.setCreatedAt(LocalDateTime.now());
@@ -54,9 +56,15 @@ public class PasswordResetService {
 
         otpRepo.save(otpEntity);
 
-        emailService.sendOtpMail(email, otp);
+        log.info("💾 OTP saved to database");
 
-        log.info("✅ OTP sent successfully to: {}", email);
+        try {
+            emailService.sendOtpMail(email, otp);
+            log.info("✅ OTP sent successfully to: {}", email);
+        } catch (Exception e) {
+            log.error("❌ Email sending failed: ", e);
+            throw new RuntimeException("Failed to send OTP email", e);
+        }
     }
 
     @Transactional
