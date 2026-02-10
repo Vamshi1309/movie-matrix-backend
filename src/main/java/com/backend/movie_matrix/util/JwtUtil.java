@@ -3,6 +3,7 @@ package com.backend.movie_matrix.util;
 import java.security.Key;
 import java.util.Date;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import io.jsonwebtoken.JwtException;
@@ -13,12 +14,13 @@ import io.jsonwebtoken.security.Keys;
 @Component
 public class JwtUtil {
 
-    private static final String SECRET_KEY = "Movie_matrix_Secret_key_Vamshi_130903";
+    @Value("${jwt.secret}")
+    private String secretKey;
 
     private static final long EXPIRATION_TIME = 1000 * 60 * 60 * 24;
 
     private Key getSigninKey() {
-        return Keys.hmacShaKeyFor(SECRET_KEY.getBytes());
+        return Keys.hmacShaKeyFor(secretKey.getBytes());
     }
 
     public String generateToken(String email) {
