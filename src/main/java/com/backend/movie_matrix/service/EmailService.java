@@ -1,9 +1,16 @@
 package com.backend.movie_matrix.service;
 
 
-import org.springframework.mail.SimpleMailMessage;
-import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+
+import com.sendgrid.Method;
+import com.sendgrid.Request;
+import com.sendgrid.Response;
+import com.sendgrid.SendGrid;
+import com.sendgrid.helpers.mail.Mail;
+import com.sendgrid.helpers.mail.objects.Content;
+import com.sendgrid.helpers.mail.objects.Email;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -13,19 +20,38 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class EmailService {
 
-    private final JavaMailSender mailSender;
+    @Value("${SENDGRID_API_KEY}")
+    private String sendGridApiKey;
+
+    private static final String FROM_EMAIL = "vamshidasari07@gmail.com";
 
     public void sendOtpMail(String toEmail, String otp) {
+        Email from = new Email(FROM_EMAIL);
+        Email to = new Email(toEmail);
+        String subject = "OTP For Reset Password";
+
+        Content content = new Content(
+                "text/plain",
+                buildMessage(otp));
+
+        Mail mail = new Mail(from, subject, to, content);
+
+        SendGrid sg = new SendGrid(sendGridApiKey);
+        Request request = new Request();
 
         try {
-            SimpleMailMessage message = new SimpleMailMessage();
-            message.setFrom("vamshidasari07@gmail.com");
-            message.setTo(toEmail);
-            message.setSubject("OTP For Reset Password");
-            message.setText(buildMessage(otp));
 
-            mailSender.send(message);
-            log.info("✅ Email sent successfully to: {}", toEmail);
+            request.setMethod(Method.POST);
+            request.setEndpoint("mail/send");
+            request.setBody(mail.build());
+
+            Response response = sg.api(request);
+
+            log.info("📧 SendGrid status: {}", response.getStatusCode());
+
+            if (response.getStatusCode() >= 400) {
+                throw new RuntimeException("SendGrid error: " + response.getBody());
+            }
         } catch (Exception e) {
             log.info("✅ Email sent successfully to: {}", toEmail);
             throw new RuntimeException("Failed to send mail: " + e.getMessage(), e);
