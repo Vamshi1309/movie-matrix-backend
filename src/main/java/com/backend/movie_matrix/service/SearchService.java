@@ -52,7 +52,27 @@ public class SearchService {
     }
 
     public MovieDto getMovieByTitle(Long userId, String title) {
+
+        String searchTerm = title.trim();
+
+        System.out.println("🔍 Searching for movie: '" + searchTerm + "'");
+
         Optional<Movie> movieOpt = movieRepo.findByTitleIgnoreCase(title.trim());
+
+        if (movieOpt.isEmpty()) {
+            System.out.println("⚠️ Exact match not found, trying partial match...");
+
+            List<Movie> similarMovies = movieRepo.findByTitleContainingIgnoreCase(searchTerm);
+
+            if (!similarMovies.isEmpty()) {
+                movieOpt = Optional.of(similarMovies.get(0));
+                System.out.println("✅ Found similar movie: '" + similarMovies.get(0).getTitle() + "'");
+            } else {
+                System.out.println("❌ No movies found for: '" + searchTerm + "'");
+            }
+        } else {
+            System.out.println("✅ Found exact match: '" + movieOpt.get().getTitle() + "'");
+        }
 
         if (movieOpt.isPresent()) {
             Movie movie = movieOpt.get();
